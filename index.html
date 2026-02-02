@@ -6,544 +6,371 @@
     <title>Gestão de Equipamentos - Onda Dura</title>
     <style>
         :root {
-            /* Paleta de cores baseada no logo azul */
-            --primary-color: #3b82f6; /* Azul vibrante */
-            --primary-dark: #1e3a8a;  /* Azul profundo */
-            --accent-color: #60a5fa;
-            --text-light: #f8fafc;
+            --primary-color: #3b82f6;
+            --primary-dark: #1e40af;
+            --card-bg: rgba(255, 255, 255, 0.95);
             --text-dark: #1e293b;
-            --card-bg: rgba(255, 255, 255, 0.95); /* Vidro fosco */
             --success-color: #10b981;
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
             --border-radius: 16px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-
-        /* --- Fundo Gradiente Onda Dura --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
             color: var(--text-dark);
             min-height: 100vh;
             padding-bottom: 2rem;
+            display: flex; flex-direction: column;
         }
 
-        /* Header Glass Effect */
+        /* TELA DE LOGIN */
+        #login-section {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 1rem;
+        }
+        .login-box {
+            background: white; padding: 2.5rem; border-radius: 20px;
+            width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .login-box h2 { color: var(--primary-dark); margin-bottom: 1.5rem; }
+        .login-toggle {
+            margin-top: 1rem; font-size: 0.9rem; color: #666;
+            cursor: pointer; text-decoration: underline;
+        }
+
+        /* APLICAÇÃO PRINCIPAL */
+        #app-section { display: none; } /* Escondido até logar */
+
         header {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
+        .logo-container { display: flex; align-items: center; gap: 0.8rem; }
+        .logo-img { height: 40px; width: auto; }
+        .logo-text { color: white; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
 
-        .logo-img {
-            height: 40px;
-            width: auto;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .logo-text {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        nav {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto; /* Para mobile se tiver muitos itens */
-            padding-bottom: 2px; /* Espaço para scroll */
-        }
-
+        nav { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 2px; }
+        
         nav button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--text-light);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; white-space: nowrap; transition: 0.3s;
         }
+        
+        nav button:hover { background: rgba(255, 255, 255, 0.3); }
+        nav button.active { background: white; color: var(--primary-dark); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        
+        .logout-btn { background: var(--danger-color) !important; opacity: 0.8; border: none !important; }
+        .logout-btn:hover { opacity: 1; }
 
-        nav button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; flex: 1; }
 
-        nav button.active {
-            background: white;
-            color: var(--primary-dark);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-        }
-
-        /* Container Principal */
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        section {
-            display: none;
-            animation: slideUp 0.4s ease-out;
-        }
-
-        section.active {
-            display: block;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        section { display: none; animation: slideUp 0.4s ease-out; }
+        section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Cards */
         .card {
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            transition: transform 0.3s;
-            position: relative;
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem; border-radius: var(--border-radius); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            text-align: center; position: relative; overflow: hidden; color: white; border: 1px solid rgba(255,255,255,0.1);
         }
+        .card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.2)); z-index: 1; }
+        .card-content { position: relative; z-index: 2; }
+        .card .count { font-size: 3rem; font-weight: 800; display: block; }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.2));
-            z-index: 1;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .card .count {
-            font-size: 3rem;
-            font-weight: 800;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* --- Inputs e Formulários --- */
+        /* Formulário e Inputs */
         .form-container, .item-card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: var(--card-bg); padding: 2rem; border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 700; color: var(--text-dark); }
+        
+        input, select, textarea {
+            width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 8px;
+            font-size: 1rem; background: #fff;
         }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-            background: #fff;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
+        
+        input:focus { outline: none; border-color: var(--primary-color); }
 
         .btn {
-            background: var(--primary-dark);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            background: var(--primary-dark); color: white; padding: 0.8rem 1.5rem;
+            border: none; border-radius: 8px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            width: 100%;
         }
-
-        .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
+        
+        .btn:hover { filter: brightness(1.2); }
         .btn-secondary { background: #64748b; }
         .btn-danger { background: var(--danger-color); }
         .btn-success { background: var(--success-color); }
 
-        /* Grids */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        /* Item Card com Foto */
-        .item-card {
-            padding: 0; /* Padding interno controlado */
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .item-photo-preview {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-            background-color: #e2e8f0;
-        }
-
-        .item-body {
-            padding: 1.5rem;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 0.5rem;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .inventory-grid { grid-template-columns: 1fr; }
-            
-            .header-content {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            nav {
-                width: 100%;
-                justify-content: space-between;
-                padding-bottom: 5px;
-            }
-            
-            nav button {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 0.6rem 0.5rem;
-            }
-
-            .card .count { font-size: 2.5rem; }
-            .item-photo-preview { height: 180px; }
-        }
-
-        /* File Input Styling */
-        .file-upload-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
         
-        .file-upload-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-btn {
-            border: 2px dashed var(--primary-color);
-            color: var(--primary-color);
-            background-color: rgba(59, 130, 246, 0.1);
-            padding: 1rem;
-            border-radius: 8px;
-            width: 100%;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        /* Modal & Toast (Simplificado) */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-            display: none; justify-content: center; align-items: center; z-index: 200;
-        }
-        .modal-content {
-            background: white; padding: 2rem; border-radius: 16px;
-            width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-        }
-        
-        .toast {
-            position: fixed; bottom: 20px; right: 20px;
-            background: #333; color: white; padding: 12px 24px;
-            border-radius: 8px; transform: translateY(150%); transition: 0.3s; z-index: 300;
-        }
-        .toast.show { transform: translateY(0); }
+        .loading { text-align: center; color: white; font-size: 1.2rem; margin-top: 2rem; }
+        .spinner { border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-content">
-            <div class="logo-container">
-                <img src="https://z-cdn-media.chatglm.cn/files/55558986-919d-4d97-8ac9-16db3ef886ad.jpg?auth_key=1870023938-1524c2b1c67a417bbe57f4aed867496a-0-2f8f5999ce43175c90361de1a5afd01a" alt="Logo" class="logo-img">
-                <span class="logo-text">Onda Dura</span>
-            </div>
-            <nav>
-                <button onclick="showSection('dashboard')" class="active" id="nav-dashboard">Painel</button>
-                <button onclick="showSection('inventory')" id="nav-inventory">Lista</button>
-                <button onclick="showSection('add')" id="nav-add">Adicionar</button>
-                <button onclick="showSection('count')" id="nav-count">Contagem</button>
-            </nav>
+    <!-- TELA DE LOGIN -->
+    <section id="login-section" class="active">
+        <div class="login-box">
+            <img src="https://z-cdn-media.chatglm.cn/files/55558986-919d-4d97-8ac9-16db3ef886ad.jpg?auth_key=1870023938-1524c2b1c67a417bbe57f4aed867496a-0-2f8f5999ce43175c90361de1a5afd01a" alt="Logo" style="width: 80px; margin-bottom: 1rem; border-radius: 50%;">
+            <h2 id="auth-title">Entrar no Sistema</h2>
+            <form id="authForm" onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="authEmail" required placeholder="nome@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="authPassword" required placeholder="********">
+                </div>
+                <button type="submit" class="btn" id="authBtn">Acessar</button>
+            </form>
+            <div class="login-toggle" onclick="toggleAuthMode()">Não tem conta? Criar conta</div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #888;">
+                * Dica de Admin: use <b>joilson.ondadura@gmail.com</b>
+            </p>
         </div>
-    </header>
+    </section>
 
-    <main>
-        <!-- Dashboard -->
-        <section id="dashboard" class="active">
-            <div class="dashboard-grid">
-                <div class="card" style="background-image: url('https://images.unsplash.com/photo-1517685352747-4949a4d29a88?q=80&w=600');">
-                    <div class="card-content">
-                        <span class="count" id="total-count">0</span>
-                        <span style="font-weight: 600;">Total Itens</span>
+    <!-- APLICAÇÃO PRINCIPAL -->
+    <div id="app-section">
+        <header>
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="https://z-cdn-media.chatglm.cn/files/55558986-919d-4d97-8ac9-16db3ef886ad.jpg?auth_key=1870023938-1524c2b1c67a417bbe57f4aed867496a-0-2f8f5999ce43175c90361de1a5afd01a" alt="Logo" class="logo-img">
+                    <span class="logo-text">Onda Dura</span>
+                </div>
+                <nav>
+                    <button onclick="showSection('dashboard')" class="active" id="nav-dashboard">Painel</button>
+                    <button onclick="showSection('inventory')" id="nav-inventory">Lista</button>
+                    <!-- Botão ADICIONAR só aparece para Admin -->
+                    <button onclick="showSection('add')" id="nav-add" style="display:none;">Adicionar</button>
+                    
+                    <button onclick="handleLogout()" class="logout-btn">Sair</button>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <!-- Dashboard -->
+            <section id="dashboard" class="active">
+                <div id="loading-dashboard" class="loading"><div class="spinner"></div> Carregando...</div>
+                <div class="dashboard-grid" id="dashboard-content" style="display:none;">
+                    <div class="card" style="background-image: url('https://images.unsplash.com/photo-1517685352747-4949a4d29a88?q=80&w=600');">
+                        <div class="card-content"><span class="count" id="total-count">0</span><span style="font-weight: 600;">Total Itens</span></div>
+                    </div>
+                    <div class="card" style="background-image: url('https://images.unsplash.com/photo-1545454675-3531b543be5d?q=80&w=600');">
+                        <div class="card-content"><span class="count" id="audio-count">0</span><span style="font-weight: 600;">Áudio</span></div>
+                    </div>
+                    <div class="card" style="background-image: url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=600');">
+                        <div class="card-content"><span class="count" id="video-count">0</span><span style="font-weight: 600;">Vídeo</span></div>
+                    </div>
+                    <div class="card" style="background-image: url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=600');">
+                        <div class="card-content"><span class="count" id="lighting-count">0</span><span style="font-weight: 600;">Iluminação</span></div>
                     </div>
                 </div>
-                <div class="card" style="background-image: url('https://images.unsplash.com/photo-1545454675-3531b543be5d?q=80&w=600');">
-                    <div class="card-content">
-                        <span class="count" id="audio-count">0</span>
-                        <span style="font-weight: 600;">Áudio</span>
-                    </div>
-                </div>
-                <div class="card" style="background-image: url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=600');">
-                    <div class="card-content">
-                        <span class="count" id="video-count">0</span>
-                        <span style="font-weight: 600;">Vídeo</span>
-                    </div>
-                </div>
-                <div class="card" style="background-image: url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=600');">
-                    <div class="card-content">
-                        <span class="count" id="lighting-count">0</span>
-                        <span style="font-weight: 600;">Iluminação</span>
-                    </div>
-                </div>
-            </div>
+            </section>
 
-            <div class="form-container" style="text-align: center; max-width: 100%;">
-                <h3 style="margin-bottom: 1rem; color: var(--primary-dark);">Ações Rápidas</h3>
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <button class="btn" onclick="showSection('add')">+ Novo Item</button>
-                    <button class="btn btn-secondary" onclick="resetData()">Resetar Tudo</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Inventory List -->
-        <section id="inventory">
-            <div style="background: rgba(255,255,255,0.9); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="text" id="searchInput" class="search-bar" placeholder="Buscar..." style="flex:1; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;" onkeyup="renderInventory()">
-                <select id="categoryFilter" style="padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;" onchange="renderInventory()">
-                    <option value="all">Todos</option>
-                    <option value="audio">Áudio</option>
-                    <option value="video">Vídeo</option>
-                    <option value="iluminacao">Luz</option>
-                    <option value="cabos">Cabos</option>
-                </select>
-            </div>
-            <div id="inventory-list" class="inventory-grid"></div>
-        </section>
-
-        <!-- Add Form -->
-        <section id="add">
-            <div class="form-container" style="max-width: 500px; margin: 0 auto;">
-                <h2 style="text-align: center; color: var(--primary-dark); margin-bottom: 1.5rem;">Cadastrar Equipamento</h2>
-                <form id="addItemForm" onsubmit="handleAddItem(event)">
-                    <div class="form-group">
-                        <label>Foto do Equipamento</label>
-                        <div class="file-upload-wrapper">
-                            <button type="button" class="file-btn" id="photoBtnText">📷 Tirar Foto ou Selecionar Arquivo</button>
-                            <input type="file" id="itemPhoto" accept="image/*" capture="environment" onchange="previewImage(this)">
-                        </div>
-                        <img id="previewImg" style="display:none; width: 100%; margin-top: 10px; border-radius: 8px; object-fit: cover;">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome</label>
-                        <input type="text" id="itemName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoria</label>
-                        <select id="itemCategory" required>
-                            <option value="audio">Áudio</option>
-                            <option value="video">Vídeo</option>
-                            <option value="iluminacao">Iluminação</option>
-                            <option value="cabos">Cabos</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Serial / Patrimônio</label>
-                        <input type="text" id="itemSerial">
-                    </div>
-                    <div class="form-group">
-                        <label>Local</label>
-                        <input type="text" id="itemLocation">
-                    </div>
-                    <button type="submit" class="btn" style="width: 100%;">Salvar</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- Count Mode -->
-        <section id="count">
-            <div style="background: rgba(255,255,255,0.9); padding: 1rem; border-radius: 12px; margin-bottom: 1rem; text-align: center;">
-                <h3>Contagem Física</h3>
-                <p>Toque nos itens para marcá-los como verificados.</p>
-                <div style="background: #e2e8f0; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden;">
-                    <div id="count-progress" style="background: var(--success-color); height: 100%; width: 0%; transition: 0.3s;"></div>
-                </div>
-                <strong id="count-checked">0</strong> / <span id="count-total">0</span>
-                <br><br>
-                <button class="btn btn-danger btn-sm" onclick="resetCountSession()">Reiniciar</button>
-            </div>
-            <div id="count-list" class="inventory-grid"></div>
-        </section>
-    </main>
-
-    <!-- Modal Edit -->
-    <div class="modal-overlay" id="editModal">
-        <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                <h3>Editar</h3>
-                <button onclick="closeEditModal()" style="border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-            </div>
-            <form id="editItemForm" onsubmit="handleEditItem(event)">
-                <input type="hidden" id="editItemId">
-                <div class="form-group"><label>Nome</label><input type="text" id="editItemName" required></div>
-                <div class="form-group"><label>Status</label>
-                    <select id="editItemStatus">
-                        <option value="active">Ativo</option>
-                        <option value="maintenance">Manutenção</option>
-                        <option value="broken">Quebrado</option>
+            <!-- Inventory List -->
+            <section id="inventory">
+                <div style="background: rgba(255,255,255,0.9); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" id="searchInput" placeholder="Buscar..." style="flex:1; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;" onkeyup="renderInventory()">
+                    <select id="categoryFilter" style="padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;" onchange="renderInventory()">
+                        <option value="all">Todos</option>
+                        <option value="audio">Áudio</option>
+                        <option value="video">Vídeo</option>
+                        <option value="iluminacao">Luz</option>
+                        <option value="cabos">Cabos</option>
                     </select>
                 </div>
-                <button type="submit" class="btn" style="width: 100%;">Atualizar</button>
-            </form>
-        </div>
+                <div id="inventory-list" class="inventory-grid"></div>
+            </section>
+
+            <!-- Add Form -->
+            <section id="add">
+                <div class="form-container" style="max-width: 500px; margin: 0 auto;">
+                    <h2 style="text-align: center; color: var(--primary-dark); margin-bottom: 1.5rem;">Cadastrar Equipamento (Admin)</h2>
+                    <form id="addItemForm" onsubmit="handleAddItem(event)">
+                        <div class="form-group"><label>Nome</label><input type="text" id="itemName" required></div>
+                        <div class="form-group"><label>Categoria</label>
+                            <select id="itemCategory" required>
+                                <option value="audio">Áudio</option>
+                                <option value="video">Vídeo</option>
+                                <option value="iluminacao">Iluminação</option>
+                                <option value="cabos">Cabos</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Serial</label><input type="text" id="itemSerial"></div>
+                        <div class="form-group"><label>Local</label><input type="text" id="itemLocation"></div>
+                        <button type="submit" class="btn">Salvar na Nuvem</button>
+                    </form>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast">Ação realizada!</div>
+    <script type="module">
+        // --- FIREBASE CONFIG ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-    <script>
-        const STORAGE_KEY = 'onda_dura_db_v2';
-        let inventory = [];
-
-        // Imagens padrão por categoria (caso não tenha foto específica)
-        const catImages = {
-            audio: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400',
-            video: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400',
-            iluminacao: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400',
-            cabos: 'https://images.unsplash.com/photo-1517685352747-4949a4d29a88?w=400'
+        const firebaseConfig = {
+          apiKey: "AIzaSyAtcAyeCl11MIq5Ad9IOqJMzJzurtmqyhU",
+          authDomain: "estoque-onda-dura.firebaseapp.com",
+          projectId: "estoque-onda-dura",
+          storageBucket: "estoque-onda-dura.firebasestorage.app",
+          messagingSenderId: "310101353412",
+          appId: "1:310101353412:web:8fa5fd1a0ced295b64fa91",
+          measurementId: "G-H0SZJEJ204"
         };
 
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            updateDashboard();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const inventoryCollection = collection(db, "equipment");
+
+        // ESTADO DO USUÁRIO
+        let currentUser = null;
+        let isAdmin = false;
+        let isLoginMode = true; // Alterna entre Login e Cadastro
+
+        let inventory = [];
+
+        // --- AUTH LOGIC ---
+        // Monitora se o usuário está logado
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                // Usuário logado
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('app-section').style.display = 'block';
+                
+                // VERIFICAÇÃO DE ADMIN (ALTERADA PARA SEU EMAIL)
+                if (user.email === 'joilson.ondadura@gmail.com') {
+                    isAdmin = true;
+                    document.getElementById('nav-add').style.display = 'block'; // Mostra botão Adicionar
+                } else {
+                    isAdmin = false;
+                    document.getElementById('nav-add').style.display = 'none'; // Esconde botão Adicionar
+                    alert("Bem-vindo, " + user.email + ". Você está no modo visualização.");
+                }
+                
+                loadData(); // Carrega dados só se logado
+            } else {
+                // Usuário não logado
+                document.getElementById('login-section').style.display = 'flex';
+                document.getElementById('app-section').style.display = 'none';
+            }
         });
 
-        function loadData() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                inventory = JSON.parse(stored);
+        window.toggleAuthMode = () => {
+            isLoginMode = !isLoginMode;
+            const title = document.getElementById('auth-title');
+            const btn = document.getElementById('authBtn');
+            const toggleText = document.querySelector('.login-toggle');
+
+            if (isLoginMode) {
+                title.innerText = "Entrar no Sistema";
+                btn.innerText = "Acessar";
+                toggleText.innerText = "Não tem conta? Criar conta";
             } else {
-                // Dados iniciais
-                inventory = [
-                    { id: 1, name: 'Mesa Yamaha MG16', category: 'audio', serial: '001', location: 'Cabine', status: 'active', image: '', checked: false },
-                    { id: 2, name: 'Microfone Shure', category: 'audio', serial: '002', location: 'Palco', status: 'active', image: '', checked: false }
-                ];
-                saveData();
+                title.innerText = "Criar Nova Conta";
+                btn.innerText = "Cadastrar";
+                toggleText.innerText = "Já tem conta? Entrar";
             }
-        }
+        };
 
-        function saveData() {
+        window.handleAuth = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(inventory));
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    // alert("Login realizado com sucesso!");
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    alert("Conta criada! Faça login agora.");
+                    toggleAuthMode(); // Volta para modo login
+                }
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+        };
+
+        window.handleLogout = () => {
+            signOut(auth);
+            // alert("Você saiu do sistema.");
+        };
+
+        // --- DADOS ---
+        async function loadData() {
+            document.getElementById('loading-dashboard').style.display = 'block';
+            document.getElementById('dashboard-content').style.display = 'none';
+
+            const snapshot = await getDocs(inventoryCollection);
+            inventory = [];
+            snapshot.forEach(doc => {
+                inventory.push({ id: doc.id, ...doc.data() });
+            });
+
+            updateDashboard();
+            document.getElementById('loading-dashboard').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'grid';
+        }
+
+        async function handleAddItem(e) {
+            e.preventDefault();
+            const newItem = {
+                name: document.getElementById('itemName').value,
+                category: document.getElementById('itemCategory').value,
+                serial: document.getElementById('itemSerial').value,
+                location: document.getElementById('itemLocation').value,
+                createdAt: new Date()
+            };
+            
+            await addDoc(inventoryCollection, newItem);
+            alert("Salvo!");
+            document.getElementById('addItemForm').reset();
+            loadData();
+            showSection('inventory');
+        }
+
+        async function deleteItem(id) {
+            // Checagem de segurança extra
+            if (!isAdmin) return alert("Apenas administradores podem excluir itens.");
+            
+            if(confirm('Apagar este item?')) {
+                await deleteDoc(doc(db, "equipment", id));
+                inventory = inventory.filter(i => i.id !== id);
+                renderInventory();
                 updateDashboard();
-            } catch (e) {
-                alert("Memória cheia! Apague alguns itens com fotos para liberar espaço.");
             }
         }
 
-        // --- Navegação ---
-        function showSection(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-            document.getElementById('nav-'+id).classList.add('active');
-            
-            if(id === 'inventory') renderInventory();
-            if(id === 'count') renderCountMode();
-        }
-
-        // --- Dashboard ---
+        // --- UI ---
         function updateDashboard() {
             document.getElementById('total-count').innerText = inventory.length;
             document.getElementById('audio-count').innerText = inventory.filter(i=>i.category==='audio').length;
@@ -551,61 +378,6 @@
             document.getElementById('lighting-count').innerText = inventory.filter(i=>i.category==='iluminacao').length;
         }
 
-        // --- Adicionar com Foto ---
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewImg').src = e.target.result;
-                    document.getElementById('previewImg').style.display = 'block';
-                    document.getElementById('photoBtnText').innerText = "Foto selecionada!";
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        let currentImageBase64 = "";
-
-        function handleAddItem(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('itemPhoto');
-            
-            // Processar imagem se houver
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    addItemToInventory(event.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                addItemToInventory("");
-            }
-        }
-
-        function addItemToInventory(imageData) {
-            const newItem = {
-                id: Date.now(),
-                name: document.getElementById('itemName').value,
-                category: document.getElementById('itemCategory').value,
-                serial: document.getElementById('itemSerial').value,
-                location: document.getElementById('itemLocation').value,
-                status: 'active',
-                image: imageData,
-                checked: false
-            };
-            inventory.unshift(newItem);
-            saveData();
-            
-            // Reset form
-            document.getElementById('addItemForm').reset();
-            document.getElementById('previewImg').style.display = 'none';
-            document.getElementById('photoBtnText').innerText = "📷 Tirar Foto ou Selecionar Arquivo";
-            
-            showToast('Item salvo!');
-            showSection('inventory');
-        }
-
-        // --- Renderizar Lista ---
         function renderInventory() {
             const container = document.getElementById('inventory-list');
             const search = document.getElementById('searchInput').value.toLowerCase();
@@ -614,132 +386,43 @@
 
             inventory.forEach(item => {
                 if((filter==='all' || item.category===filter) && item.name.toLowerCase().includes(search)) {
+                    const div = document.createElement('div');
+                    div.className = 'item-card';
                     
-                    // Lógica de imagem: Tenta usar a foto tirada, se não usa a da categoria
-                    const displayImage = item.image ? item.image : catImages[item.category] || catImages.cabos;
-                    
-                    let statusColor = item.status === 'active' ? 'green' : (item.status === 'broken' ? 'red' : 'orange');
-                    let statusText = item.status === 'active' ? 'Ativo' : (item.status === 'broken' ? 'Quebrado' : 'Manutenção');
+                    // Se for admin, mostra botão de deletar
+                    const deleteButton = isAdmin 
+                        ? `<div style="margin-top: 1rem; text-align: right;">
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem; width: auto;" onclick="window.deleteItem('${item.id}')">Excluir</button>
+                           </div>` 
+                        : '';
 
-                    const card = document.createElement('div');
-                    card.className = 'item-card';
-                    card.innerHTML = `
-                        <img src="${displayImage}" class="item-photo-preview" alt="${item.name}">
-                        <div class="item-body">
-                            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${item.name}</h3>
-                            <div style="display:flex; justify-content:space-between; font-size: 0.9rem; color: #555;">
-                                <span>${item.category.toUpperCase()}</span>
-                                <span style="color:${statusColor}; font-weight:bold;">● ${statusText}</span>
-                            </div>
-                            <p style="font-size: 0.85rem; color: #777; margin-top: 0.5rem;">Serial: ${item.serial || '-'}</p>
-                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                                <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;" onclick="openEdit(${item.id})">Editar</button>
-                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;" onclick="del(${item.id})">Excluir</button>
-                            </div>
+                    div.innerHTML = `
+                        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${item.name}</h3>
+                        <div style="display:flex; justify-content:space-between; font-size: 0.9rem; color: #555;">
+                            <span>${item.category.toUpperCase()}</span>
                         </div>
+                        <p style="font-size: 0.85rem; color: #777; margin-top: 0.5rem;">Serial: ${item.serial || '-'}</p>
+                        <p style="font-size: 0.85rem; color: #777;">Local: ${item.location || '-'}</p>
+                        ${deleteButton}
                     `;
-                    container.appendChild(card);
+                    container.appendChild(div);
                 }
             });
         }
 
-        // --- Edição / Exclusão ---
-        function del(id) {
-            if(confirm('Apagar este item?')) {
-                inventory = inventory.filter(i => i.id !== id);
-                saveData();
-                renderInventory();
-            }
-        }
+        window.showSection = (id) => {
+            if (id === 'add' && !isAdmin) return alert("Acesso negado. Área de Administrador.");
 
-        function openEdit(id) {
-            const item = inventory.find(i => i.id === id);
-            if(!item) return;
-            document.getElementById('editItemId').value = item.id;
-            document.getElementById('editItemName').value = item.name;
-            document.getElementById('editItemStatus').value = item.status;
-            document.getElementById('editModal').style.display = 'flex';
-        }
+            document.querySelectorAll('main section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('nav-'+id).classList.add('active');
+            if(id === 'inventory') renderInventory();
+        };
 
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
+        window.handleAddItem = handleAddItem;
+        window.deleteItem = deleteItem;
 
-        function handleEditItem(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editItemId').value);
-            const idx = inventory.findIndex(i => i.id === id);
-            if(idx > -1) {
-                inventory[idx].name = document.getElementById('editItemName').value;
-                inventory[idx].status = document.getElementById('editItemStatus').value;
-                saveData();
-                closeEditModal();
-                renderInventory();
-                showToast('Atualizado!');
-            }
-        }
-
-        // --- Contagem ---
-        function renderCountMode() {
-            const container = document.getElementById('count-list');
-            container.innerHTML = '';
-            let checked = 0;
-
-            inventory.forEach(item => {
-                if(item.checked) checked++;
-                const displayImage = item.image ? item.image : catImages[item.category];
-
-                const div = document.createElement('div');
-                div.className = 'item-card';
-                div.style.cursor = 'pointer';
-                div.onclick = () => toggleCheck(item.id);
-                
-                div.innerHTML = `
-                    <img src="${displayImage}" class="item-photo-preview" style="opacity: ${item.checked ? 0.5 : 1}; filter: grayscale(${item.checked ? 100 : 0}%);">
-                    <div style="padding: 1rem; display:flex; justify-content:space-between; align-items:center;">
-                        <strong style="text-decoration: ${item.checked ? 'line-through' : 'none'}">${item.name}</strong>
-                        <span style="font-size: 1.5rem;">${item.checked ? '✅' : '⬜'}</span>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-
-            document.getElementById('count-checked').innerText = checked;
-            document.getElementById('count-total').innerText = inventory.length;
-            document.getElementById('count-progress').style.width = (inventory.length ? (checked/inventory.length)*100 : 0) + '%';
-        }
-
-        function toggleCheck(id) {
-            const item = inventory.find(i => i.id === id);
-            if(item) {
-                item.checked = !item.checked;
-                saveData();
-                renderCountMode();
-            }
-        }
-
-        function resetCountSession() {
-            if(confirm('Zerar contagem?')) {
-                inventory.forEach(i => i.checked = false);
-                saveData();
-                renderCountMode();
-            }
-        }
-
-        function resetData() {
-            if(confirm('Resetar TUDO?')) {
-                localStorage.removeItem(STORAGE_KEY);
-                loadData();
-                updateDashboard();
-            }
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
-        }
     </script>
 </body>
 </html>
